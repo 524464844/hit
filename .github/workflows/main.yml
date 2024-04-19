@@ -1,0 +1,19 @@
+name: DingTalk ly Notification
+on:
+  schedule:
+    - cron: '0 * * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send no DingTalk
+      run: |
+        curl 'https://seller.kuajingmaihuo.com/api/merchant/payment/account/amount/info' \
+          -X 'POST' \
+          -H 'Content-Type: application/json'
+          -H 'mallid: 22059874827'
+          -d '{}
+          }'
+      env:
+        MY_VARIABLE: ${{ secrets.MY_SECRET }}
