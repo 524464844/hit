@@ -1,0 +1,35 @@
+name: Daily Build and Test
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8' # Replace with your desired version
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Send POST request
+      run: |
+        curl -X POST -H "Content-Type: application/json" -H "mallid: 220598746827" -d '{}' -b "SUB_PASS_ID=eyJ0IjoiZ0wwcHFmVHFFVC93S3dHV1ZLZjBhdzhQcWorRTRuQmtaaSsrbGFZV2kwcEE4d2pKbkF3RUpLcVBmSXBMUitMWSIsInYiOjEsInMiOjEwMDAwLCJ1IjozNjU4ODU3NDAwMTd9" https://seller.kuajingmaihuo.com/api/merchant/payment/account/amount/info > response.json
+        jq -r '.' response.json
+
+    - name: Send another POST request with the availableBalance value from the first response
+      run: |
+        cat response.json | jq -r '.result.availableBalance' > balance.txt
+        echo '{"text": {"content":"'$(cat balance.txt)'", "msgtype":"text"}}' > data.json
+        curl -X POST -H "Content-Type: application/json" -H "mallid: 220598746827" -d "@data.json" -b "SUB_PASS_ID=eyJ0IjoiZ0wwcHFmVHFFVC93S3dHV1ZLZjBhdzhQcWorRTRuQmtaaSsrbGFZV2kwcEE4d2pKbkF3RUpLcVBmSXBMUitMWSIsInYiOjEsInMiOjEwMDAwLCJ1IjozNjU4ODU3NDAwMTd9" https://another.url.com/api/some/endpoint
