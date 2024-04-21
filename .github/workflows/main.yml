@@ -32,5 +32,5 @@ jobs:
     - name: Send another POST request with the availableBalance value from the first response
       run: |
         cat response.json | jq -r '.result.availableBalance' > balance.txt
-        echo '{"text": {"content":"'$(cat balance.txt)'", "msgtype":"text"}}' > data.json
-        curl -X POST -H "Content-Type: application/json" -d '{ "msgtype": "text","text": {"content": "@data.json"}}' https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=576f92ae-b64c-4069-bcc6-855809e867e8
+        echo '{ "msgtype": "text","text": {"content": "'$(cat balance.txt)'"}}' > data.json
+        curl -X POST -H "Content-Type: application/json" -d "@data.json" https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=576f92ae-b64c-4069-bcc6-855809e867e8
