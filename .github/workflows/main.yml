@@ -26,11 +26,11 @@ jobs:
 
     - name: Send POST request
       run: |
-        curl -X POST -H "Content-Type: application/json" -H "mallid: 220598746827" -d '{}' -b "SUB_PASS_ID=eyJ0IjoielRPaWUyOExNVzJpOHZSekNlS3Z5SldyWDgwOXZlSGFvK0gzb1dhazVzMllaa0FyZVAvbU9OV3ZPOTlOUkk5dyIsInYiOjEsInMiOjEwMDAwLCJ1IjozNjU4ODU3NDAwMTd9" https://seller.kuajingmaihuo.com/api/merchant/payment/account/amount/info > response.json
+        curl -X POST -H "Content-Type: application/json" -H "mallid: 220598746827" -d '{}' -b "SUB_PASS_ID=eyJ0Ijoiazlzb0dTZDBsZFJEbGhrMFhsQ29zMGgvWWVTVWY2NTBLSHc5TTg2d3NJeUZrbzJWQkJNSWhCSDZrSUMrbnJaNyIsInYiOjEsInMiOjEwMDAwLCJ1IjoxMDMwMzAxNjA4MzExNn0=" https://seller.kuajingmaihuo.com/api/merchant/payment/account/amount/info > response.json
         jq -r '.' response.json
 
     - name: Send another POST request with the availableBalance value from the first response
       run: |
         cat response.json | jq -r '.result.availableBalance' > balance.txt
-        echo '{ "msgtype": "text","text": {"content": "'$(cat balance.txt)'"}}' > data.json
+        echo '{ "msgtype": "text","text": {"content": "可用余额'$(cat balance.txt)'"}}' > data.json
         curl -X POST -H "Content-Type: application/json" -d "@data.json" https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=576f92ae-b64c-4069-bcc6-855809e867e8
