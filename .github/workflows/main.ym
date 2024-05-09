@@ -1,0 +1,22 @@
+name: Save Data to Repository
+
+on: [push]
+
+jobs:
+  save-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Generate data
+        run: echo "Your generated data" > 1.txt
+      - name: Add changes to commit
+        run: |
+          git add 1.txt
+          git commit -m "Update 1.txt with generated data"
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.2
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
